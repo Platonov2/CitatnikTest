@@ -9,8 +9,8 @@ public class CitataModel {
     private String title;
     @JsonProperty(value = "content")
     private String content;
-    @JsonProperty(value = "cretionDate")
-    private String cretionDate;
+    @JsonProperty(value = "creationDate")
+    private String creationDate;
 
     public int getCitataId() {
         return citataId;
@@ -34,10 +34,10 @@ public class CitataModel {
     }
 
     public String getCretionDate() {
-        return cretionDate;
+        return creationDate;
     }
     public void setCretionDate(String cretionDate) {
-        this.cretionDate = cretionDate;
+        this.creationDate = cretionDate;
     }
 }
 

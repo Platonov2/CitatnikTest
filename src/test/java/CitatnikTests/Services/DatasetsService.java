@@ -2,6 +2,7 @@ package CitatnikTests.Services;
 
 import CitatnikTests.Builders.DatasetRequestBuilder;
 import CitatnikTests.Models.CitataModel;
+import CitatnikTests.Models.ErrorModel;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -19,27 +20,28 @@ public class DatasetsService {
         System.setProperty("com.sun.security.enableAIAcaIssuers", "false");
 
         RequestSpecBuilder specBuilder = new RequestSpecBuilder()
-                .setContentType(ContentType.JSON)
-                .setBaseUri(url);
+                .setContentType(ContentType.JSON);
 
         spec = specBuilder.build();
     }
 
-    private RequestSpecification baseRequest() {
-        return given().spec(spec);
-    }
-
     public DatasetRequestBuilder requestBuilder() {
-        return new DatasetRequestBuilder(baseRequest());
+        return new DatasetRequestBuilder(given().spec(spec));
     }
 
-    public CitataModel getDatasets(RequestSpecification requestSpecification) {
+    public CitataModel getCitata(RequestSpecification requestSpecification) {
         return executePostDatasets(requestSpecification).then()
                 .extract()
                 .body().as(CitataModel.class);
     }
 
+    public ErrorModel getError(RequestSpecification requestSpecification) {
+        return executePostDatasets(requestSpecification).then()
+                .extract()
+                .body().as(ErrorModel.class);
+    }
+
     public Response executePostDatasets(RequestSpecification requestSpecification) {
-        return requestSpecification.post(Url);
+        return requestSpecification.get(Url);
     }
 }
