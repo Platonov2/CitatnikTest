@@ -2,6 +2,8 @@ package CitatnikTests.Builders;
 
 import io.restassured.specification.RequestSpecification;
 
+import java.util.Properties;
+
 public class DatasetRequestBuilder {
     private RequestSpecification requestSpecification;
 
@@ -9,8 +11,9 @@ public class DatasetRequestBuilder {
         this.requestSpecification = requestSpecification;
     }
 
-    public DatasetRequestBuilder getFields(String... fields) {
-        requestSpecification.body(fields);
+    public DatasetRequestBuilder WithId(int id, Properties properties){
+        String EndUrl = properties.getProperty("base_path") + String.valueOf(id);
+        requestSpecification.basePath(EndUrl);
         return this;
     }
 

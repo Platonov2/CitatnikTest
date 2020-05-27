@@ -3,45 +3,41 @@ package CitatnikTests.Services;
 import CitatnikTests.Builders.DatasetRequestBuilder;
 import CitatnikTests.Models.CitataModel;
 import CitatnikTests.Models.ErrorModel;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.util.Properties;
+
 import static io.restassured.RestAssured.given;
 
-public class DatasetsService {
+public class DatasetsService extends BaseService {
     private static String Url;
-    private final RequestSpecification spec;
+    private static String Endpoint;
 
-    public DatasetsService(String url) {
-        Url = url;
-
-        System.setProperty("com.sun.security.enableAIAcaIssuers", "false");
-
-        RequestSpecBuilder specBuilder = new RequestSpecBuilder()
-                .setContentType(ContentType.JSON);
-
-        spec = specBuilder.build();
+    public DatasetsService(Properties properties) {
+        super(properties);
     }
 
     public DatasetRequestBuilder requestBuilder() {
-        return new DatasetRequestBuilder(given().spec(spec));
+        return new DatasetRequestBuilder(baseRequest());
     }
 
     public CitataModel getCitata(RequestSpecification requestSpecification) {
-        return executePostDatasets(requestSpecification).then()
+        return executeGet(requestSpecification).then()
                 .extract()
                 .body().as(CitataModel.class);
     }
 
     public ErrorModel getError(RequestSpecification requestSpecification) {
-        return executePostDatasets(requestSpecification).then()
+        return executeGet(requestSpecification).then()
                 .extract()
                 .body().as(ErrorModel.class);
     }
 
-    public Response executePostDatasets(RequestSpecification requestSpecification) {
-        return requestSpecification.get(Url);
+    public Response executeGet(RequestSpecification requestSpecification) {
+        return requestSpecification.get();
     }
 }

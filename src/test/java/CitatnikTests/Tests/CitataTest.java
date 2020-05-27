@@ -3,36 +3,40 @@ package CitatnikTests.Tests;
 import CitatnikTests.Models.CitataModel;
 import CitatnikTests.Models.ErrorModel;
 import CitatnikTests.Services.DatasetsService;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBodyExtractionOptions;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CitataTest {
+public class CitataTest extends BaseTest {
     @Test(groups = "positiveTest")
     public void GetCitataPositiveTest (){
-        DatasetsService datasetsService = new DatasetsService("http://localhost:62146/api/Citata/1");
+        DatasetsService datasetsService = new DatasetsService(properties);
 
         RequestSpecification requestSpecification = datasetsService.requestBuilder()
-                .getFields("citataId" ,"title", "content")
+                .WithId(1, properties)
                 .build();
 
-        CitataModel citata = datasetsService.getCitata(requestSpecification);
-
-        assertThat(citata.getCitataId(), equalTo(1));
-        assertThat(citata.getTitle(), containsString("Title1"));
-        assertThat(citata.getContent(), containsString("Content1"));
-        assertThat(citata.getCretionDate(), notNullValue());
+        ValidatableResponse response = datasetsService.executeGet(requestSpecification)
+                .then()
+                .assertThat()
+                .body("citataId", equalTo(1))
+                .and().body("title", equalTo("Title1"))
+                .and().body("content", equalTo("Content1"))
+                .and().body("creationDate", notNullValue());
     }
 
     @Test(groups = "negativeTest")
     public void GetCitataNegativeTest (){
-        DatasetsService datasetsService = new DatasetsService("http://localhost:62146/api/Citata/0");
+        DatasetsService datasetsService = new DatasetsService(properties);
 
         RequestSpecification requestSpecification = datasetsService.requestBuilder()
+                .WithId(0, properties)
                 .build();
 
         ErrorModel error = datasetsService.getError(requestSpecification);
